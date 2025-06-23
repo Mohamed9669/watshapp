@@ -1,0 +1,47 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "john",
+      "password": "password123",
+      "name": "John Doe",
+      "avatar": "https://randomuser.me/api/portraits/men/1.jpg",
+      "online": true
+    },
+    {
+      "id": 2,
+      "username": "jane",
+      "password": "pass123",
+      "name": "Jane Smith",
+      "avatar": "https://randomuser.me/api/portraits/women/2.jpg",
+      "online": true
+    }
+  ],
+  "conversations": [
+    {
+      "id": 1,
+      "participants": [1, 2],
+      "lastMessage": "Salut, ça va ?",
+      "lastMessageTime": "2023-06-23T10:30:00Z",
+      "unreadCount": 0
+    }
+  ],
+  "messages": [
+    {
+      "id": 1,
+      "conversationId": 1,
+      "senderId": 1,
+      "content": "Salut, ça va ?",
+      "timestamp": "2023-06-23T10:30:00Z",
+      "read": true
+    },
+    {
+      "id": 2,
+      "conversationId": 1,
+      "senderId": 2,
+      "content": "Oui, et toi ?",
+      "timestamp": "2023-06-23T10:32:00Z",
+      "read": true
+    }
+  ]
+}

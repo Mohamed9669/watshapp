@@ -1,0 +1,52 @@
+### Get all students
+GET http://localhost:3000/etudiants
+Accept: application/json
+
+### Get student by ID
+GET http://localhost:3000/etudiants/2
+Accept: application/json
+
+### Get student by matricule
+GET http://localhost:3000/etudiants?matricule=Mat_002
+Accept: application/json
+
+### Add a new student
+POST http://localhost:3000/etudiants
+Content-Type: application/json
+
+{
+"id": 4,
+  "matricule": "Mat_004",
+  "nom": "NIANG",
+  "prenom": "Awa",
+  "classe": [
+    {
+      "filiere": "GL",
+      "niveau": "Licence 2"
+    }
+  ],
+  "notes": [
+    {
+      "matiere": "JS",
+      "note": 12
+    },
+    {
+      "matiere": "Cryptographie",
+      "note": 18
+    }
+  ]
+}
+### Modifier un étudiant (ID 2)
+PATCH http://localhost:3000/etudiants/2
+Content-Type: application/json
+
+{
+  "prenom":"Mamadou"
+}
+
+### Supprimer un étudiant (ID 2)
+DELETE http://localhost:3000/etudiants/2
+Accept: application/json
+
+
+

@@ -1,0 +1,18 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "back": "json-server --watch db.json --port 3000 "
+  },
+  "keywords": [],
+  "author": "Adama NIANG <adamaniangtkd81@gmail.com>",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "json-server": "^1.0.0-beta.3",
+    "typescript": "^5.8.3"
+  }
+}
