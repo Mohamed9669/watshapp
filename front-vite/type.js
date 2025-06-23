@@ -49,6 +49,9 @@ var ChatApp = /** @class */ (function () {
         this.currentConversation = null;
         this.loadSampleData();
     }
+    ChatApp.prototype.getCurrentConversation = function () {
+        return this.currentConversation;
+    };
     ChatApp.prototype.loadSampleData = function () {
         // Création d'utilisateurs
         this.users = [
@@ -79,7 +82,7 @@ var ChatApp = /** @class */ (function () {
     ChatApp.prototype.getOtherParticipant = function (conversation) {
         if (!currentUser)
             return undefined;
-        var otherId = conversation.participants.find(function (id) { return id !== currentUser.id; });
+        var otherId = conversation.participants.find(function (id) { return id !== (currentUser === null || currentUser === void 0 ? void 0 : currentUser.id); });
         return this.users.find(function (u) { return u.id === otherId; });
     };
     ChatApp.prototype.setCurrentConversation = function (conversationId) {
@@ -116,31 +119,31 @@ var sendButton = document.getElementById("sendButton");
 // Initialisation de l'application
 document.addEventListener("DOMContentLoaded", function () {
     // Gestion de la connexion
-    loginForm.addEventListener("submit", function (e) {
+    loginForm === null || loginForm === void 0 ? void 0 : loginForm.addEventListener("submit", function (e) {
         e.preventDefault();
         var usernameInput = document.getElementById("username");
         var passwordInput = document.getElementById("password");
         // Simulation de vérification des identifiants
-        var validCredentials = usernameInput.value.trim() !== "" && passwordInput.value.trim() !== "";
+        var validCredentials = (usernameInput === null || usernameInput === void 0 ? void 0 : usernameInput.value.trim()) !== "" && (passwordInput === null || passwordInput === void 0 ? void 0 : passwordInput.value.trim()) !== "";
         if (validCredentials) {
             // Connexion réussie
-            loginError.classList.add("hidden");
+            loginError === null || loginError === void 0 ? void 0 : loginError.classList.add("hidden");
             // Créer l'utilisateur actuel (simulation)
             currentUser = new User(1, usernameInput.value.trim(), usernameInput.value.trim(), "https://ui-avatars.com/api/?name=".concat(usernameInput.value.trim(), "&background=128C7E&color=fff"));
             // Afficher l'application principale
-            loginScreen.classList.add("hidden");
-            mainApp.classList.remove("hidden");
+            loginScreen === null || loginScreen === void 0 ? void 0 : loginScreen.classList.add("hidden");
+            mainApp === null || mainApp === void 0 ? void 0 : mainApp.classList.remove("hidden");
             // Charger les conversations
             loadConversations();
         }
         else {
             // Afficher une erreur
-            loginError.classList.remove("hidden");
+            loginError === null || loginError === void 0 ? void 0 : loginError.classList.remove("hidden");
         }
     });
     // Gestion de l'envoi de message
-    sendButton.addEventListener("click", sendMessage);
-    messageInput.addEventListener("keypress", function (e) {
+    sendButton === null || sendButton === void 0 ? void 0 : sendButton.addEventListener("click", sendMessage);
+    messageInput === null || messageInput === void 0 ? void 0 : messageInput.addEventListener("keypress", function (e) {
         if (e.key === "Enter") {
             sendMessage();
         }
@@ -148,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 // Charger les conversations
 function loadConversations() {
-    if (!currentUser)
+    if (!currentUser || !conversationsList)
         return;
     var conversations = chatApp.getConversationsForUser(currentUser.id);
     conversationsList.innerHTML = "";
@@ -164,9 +167,9 @@ function loadConversations() {
         var conversationItem = document.createElement("div");
         conversationItem.className = "p-3 flex items-center hover:bg-gray-50 cursor-pointer chat-list-item ".concat(conv.unreadCount > 0 ? "bg-blue-50" : "");
         conversationItem.dataset.conversationId = conv.id.toString();
-        conversationItem.innerHTML = "\n                    <div class=\"relative flex-shrink-0\">\n                        <img src=\"".concat(otherUser.avatar, "\" class=\"w-12 h-12 rounded-full\">\n                        <span class=\"absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white\"></span>\n                    </div>\n                    <div class=\"ml-3 flex-1 min-w-0\">\n                        <div class=\"flex justify-between\">\n                            <h3 class=\"font-semibold text-gray-900 truncate\">").concat(otherUser.name, "</h3>\n                            <span class=\"text-xs text-gray-500\">").concat(timeString, "</span>\n                        </div>\n                        <div class=\"flex justify-between\">\n                            <p class=\"text-sm text-gray-500 truncate\">").concat(conv.lastMessage, "</p>\n                            ").concat(conv.unreadCount > 0
+        conversationItem.innerHTML = "\n      <div class=\"relative flex-shrink-0\">\n        <img src=\"".concat(otherUser.avatar, "\" class=\"w-12 h-12 rounded-full\">\n        <span class=\"absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white\"></span>\n      </div>\n      <div class=\"ml-3 flex-1 min-w-0\">\n        <div class=\"flex justify-between\">\n          <h3 class=\"font-semibold text-gray-900 truncate\">").concat(otherUser.name, "</h3>\n          <span class=\"text-xs text-gray-500\">").concat(timeString, "</span>\n        </div>\n        <div class=\"flex justify-between\">\n          <p class=\"text-sm text-gray-500 truncate\">").concat(conv.lastMessage, "</p>\n          ").concat(conv.unreadCount > 0
             ? "<span class=\"bg-whatsapp text-white text-xs w-5 h-5 rounded-full flex items-center justify-center\">".concat(conv.unreadCount, "</span>")
-            : "", "\n                        </div>\n                    </div>\n                ");
+            : "", "\n        </div>\n      </div>\n    ");
         conversationItem.addEventListener("click", function () {
             // Supprimer la classe active de tous les éléments
             document.querySelectorAll(".chat-list-item").forEach(function (el) {
@@ -182,6 +185,8 @@ function loadConversations() {
 }
 // Charger une conversation spécifique
 function loadConversation(conversationId) {
+    if (!messagesContainer || !currentChatName || !currentChatStatus)
+        return;
     var conversation = chatApp.setCurrentConversation(conversationId);
     if (!conversation || !currentUser)
         return;
@@ -194,16 +199,16 @@ function loadConversation(conversationId) {
     // Afficher les messages
     messagesContainer.innerHTML = "";
     conversation.messages.forEach(function (message) {
-        var isSender = message.senderId === currentUser.id;
+        var isSender = message.senderId === (currentUser === null || currentUser === void 0 ? void 0 : currentUser.id);
         var messageTime = new Date(message.timestamp).toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
         });
         var messageElement = document.createElement("div");
         messageElement.className = "flex ".concat(isSender ? "justify-end" : "justify-start", " mb-2");
-        messageElement.innerHTML = "\n                    <div class=\"max-w-xs lg:max-w-md\">\n                        <div class=\"".concat(isSender
+        messageElement.innerHTML = "\n      <div class=\"max-w-xs lg:max-w-md\">\n        <div class=\"".concat(isSender
             ? "bg-whatsapp-light text-white message-sent"
-            : "bg-white text-gray-800 message-received", " p-3 rounded-lg shadow-sm\">\n                            <p>").concat(message.content, "</p>\n                        </div>\n                        <div class=\"text-xs text-gray-500 mt-1 ").concat(isSender ? "text-right" : "text-left", "\">").concat(messageTime, "</div>\n                    </div>\n                ");
+            : "bg-white text-gray-800 message-received", " p-3 rounded-lg shadow-sm\">\n          <p>").concat(message.content, "</p>\n        </div>\n        <div class=\"text-xs text-gray-500 mt-1 ").concat(isSender ? "text-right" : "text-left", "\">").concat(messageTime, "</div>\n      </div>\n    ");
         messagesContainer.appendChild(messageElement);
     });
     // Faire défiler vers le bas
@@ -211,7 +216,7 @@ function loadConversation(conversationId) {
 }
 // Envoyer un message
 function sendMessage() {
-    if (!messageInput.value.trim() || !currentUser)
+    if (!(messageInput === null || messageInput === void 0 ? void 0 : messageInput.value.trim()) || !currentUser)
         return;
     var content = messageInput.value.trim();
     // Créer et ajouter le message
@@ -221,7 +226,8 @@ function sendMessage() {
     // Effacer le champ de saisie
     messageInput.value = "";
     // Mettre à jour l'interface
-    if (chatApp.setCurrentConversation) {
-        loadConversation(chatApp.setCurrentConversation.id);
+    var currentConversation = chatApp.getCurrentConversation();
+    if (currentConversation) {
+        loadConversation(currentConversation.id);
     }
 }

@@ -50,6 +50,10 @@ class ChatApp {
     this.loadSampleData();
   }
 
+  public getCurrentConversation(): Conversation | null {
+    return this.currentConversation;
+  }
+
   private loadSampleData() {
     // Création d'utilisateurs
     this.users = [
@@ -130,7 +134,7 @@ class ChatApp {
   getOtherParticipant(conversation: Conversation): User | undefined {
     if (!currentUser) return undefined;
     const otherId = conversation.participants.find(
-      (id) => id !== currentUser.id
+      (id) => id !== currentUser?.id
     );
     return this.users.find((u) => u.id === otherId);
   }
@@ -160,37 +164,51 @@ class ChatApp {
 }
 
 // Variables globales
-let currentUser = null;
+let currentUser: User | null = null;
 const chatApp = new ChatApp();
 
 // DOM Elements
-const loginScreen = document.getElementById("loginScreen");
-const mainApp = document.getElementById("mainApp");
-const loginForm = document.getElementById("loginForm");
-const loginError = document.getElementById("loginError");
-const conversationsList = document.getElementById("conversationsList");
-const messagesContainer = document.getElementById("messagesContainer");
-const currentChatName = document.getElementById("currentChatName");
-const currentChatStatus = document.getElementById("currentChatStatus");
-const messageInput = document.getElementById("messageInput");
-const sendButton = document.getElementById("sendButton");
+const loginScreen = document.getElementById("loginScreen") as HTMLElement;
+const mainApp = document.getElementById("mainApp") as HTMLElement;
+const loginForm = document.getElementById("loginForm") as HTMLFormElement;
+const loginError = document.getElementById("loginError") as HTMLElement;
+const conversationsList = document.getElementById(
+  "conversationsList"
+) as HTMLElement;
+const messagesContainer = document.getElementById(
+  "messagesContainer"
+) as HTMLElement;
+const currentChatName = document.getElementById(
+  "currentChatName"
+) as HTMLElement;
+const currentChatStatus = document.getElementById(
+  "currentChatStatus"
+) as HTMLElement;
+const messageInput = document.getElementById(
+  "messageInput"
+) as HTMLInputElement;
+const sendButton = document.getElementById("sendButton") as HTMLButtonElement;
 
 // Initialisation de l'application
 document.addEventListener("DOMContentLoaded", () => {
   // Gestion de la connexion
-  loginForm.addEventListener("submit", (e) => {
+  loginForm?.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const usernameInput = document.getElementById("username");
-    const passwordInput = document.getElementById("password");
+    const usernameInput = document.getElementById(
+      "username"
+    ) as HTMLInputElement;
+    const passwordInput = document.getElementById(
+      "password"
+    ) as HTMLInputElement;
 
     // Simulation de vérification des identifiants
     const validCredentials =
-      usernameInput.value.trim() !== "" && passwordInput.value.trim() !== "";
+      usernameInput?.value.trim() !== "" && passwordInput?.value.trim() !== "";
 
     if (validCredentials) {
       // Connexion réussie
-      loginError.classList.add("hidden");
+      loginError?.classList.add("hidden");
 
       // Créer l'utilisateur actuel (simulation)
       currentUser = new User(
@@ -201,20 +219,20 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       // Afficher l'application principale
-      loginScreen.classList.add("hidden");
-      mainApp.classList.remove("hidden");
+      loginScreen?.classList.add("hidden");
+      mainApp?.classList.remove("hidden");
 
       // Charger les conversations
       loadConversations();
     } else {
       // Afficher une erreur
-      loginError.classList.remove("hidden");
+      loginError?.classList.remove("hidden");
     }
   });
 
   // Gestion de l'envoi de message
-  sendButton.addEventListener("click", sendMessage);
-  messageInput.addEventListener("keypress", (e) => {
+  sendButton?.addEventListener("click", sendMessage);
+  messageInput?.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
       sendMessage();
     }
@@ -223,7 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Charger les conversations
 function loadConversations() {
-  if (!currentUser) return;
+  if (!currentUser || !conversationsList) return;
 
   const conversations = chatApp.getConversationsForUser(currentUser.id);
 
@@ -245,31 +263,27 @@ function loadConversations() {
     }`;
     conversationItem.dataset.conversationId = conv.id.toString();
     conversationItem.innerHTML = `
-                    <div class="relative flex-shrink-0">
-                        <img src="${
-                          otherUser.avatar
-                        }" class="w-12 h-12 rounded-full">
-                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
-                    </div>
-                    <div class="ml-3 flex-1 min-w-0">
-                        <div class="flex justify-between">
-                            <h3 class="font-semibold text-gray-900 truncate">${
-                              otherUser.name
-                            }</h3>
-                            <span class="text-xs text-gray-500">${timeString}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <p class="text-sm text-gray-500 truncate">${
-                              conv.lastMessage
-                            }</p>
-                            ${
-                              conv.unreadCount > 0
-                                ? `<span class="bg-whatsapp text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">${conv.unreadCount}</span>`
-                                : ""
-                            }
-                        </div>
-                    </div>
-                `;
+      <div class="relative flex-shrink-0">
+        <img src="${otherUser.avatar}" class="w-12 h-12 rounded-full">
+        <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+      </div>
+      <div class="ml-3 flex-1 min-w-0">
+        <div class="flex justify-between">
+          <h3 class="font-semibold text-gray-900 truncate">${
+            otherUser.name
+          }</h3>
+          <span class="text-xs text-gray-500">${timeString}</span>
+        </div>
+        <div class="flex justify-between">
+          <p class="text-sm text-gray-500 truncate">${conv.lastMessage}</p>
+          ${
+            conv.unreadCount > 0
+              ? `<span class="bg-whatsapp text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">${conv.unreadCount}</span>`
+              : ""
+          }
+        </div>
+      </div>
+    `;
 
     conversationItem.addEventListener("click", () => {
       // Supprimer la classe active de tous les éléments
@@ -290,6 +304,8 @@ function loadConversations() {
 
 // Charger une conversation spécifique
 function loadConversation(conversationId: number) {
+  if (!messagesContainer || !currentChatName || !currentChatStatus) return;
+
   const conversation = chatApp.setCurrentConversation(conversationId);
   if (!conversation || !currentUser) return;
 
@@ -304,7 +320,7 @@ function loadConversation(conversationId: number) {
   messagesContainer.innerHTML = "";
 
   conversation.messages.forEach((message) => {
-    const isSender = message.senderId === currentUser.id;
+    const isSender = message.senderId === currentUser?.id;
     const messageTime = new Date(message.timestamp).toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
@@ -315,19 +331,19 @@ function loadConversation(conversationId: number) {
       isSender ? "justify-end" : "justify-start"
     } mb-2`;
     messageElement.innerHTML = `
-                    <div class="max-w-xs lg:max-w-md">
-                        <div class="${
-                          isSender
-                            ? "bg-whatsapp-light text-white message-sent"
-                            : "bg-white text-gray-800 message-received"
-                        } p-3 rounded-lg shadow-sm">
-                            <p>${message.content}</p>
-                        </div>
-                        <div class="text-xs text-gray-500 mt-1 ${
-                          isSender ? "text-right" : "text-left"
-                        }">${messageTime}</div>
-                    </div>
-                `;
+      <div class="max-w-xs lg:max-w-md">
+        <div class="${
+          isSender
+            ? "bg-whatsapp-light text-white message-sent"
+            : "bg-white text-gray-800 message-received"
+        } p-3 rounded-lg shadow-sm">
+          <p>${message.content}</p>
+        </div>
+        <div class="text-xs text-gray-500 mt-1 ${
+          isSender ? "text-right" : "text-left"
+        }">${messageTime}</div>
+      </div>
+    `;
 
     messagesContainer.appendChild(messageElement);
   });
@@ -338,7 +354,7 @@ function loadConversation(conversationId: number) {
 
 // Envoyer un message
 function sendMessage() {
-  if (!messageInput.value.trim() || !currentUser) return;
+  if (!messageInput?.value.trim() || !currentUser) return;
 
   const content = messageInput.value.trim();
 
@@ -350,7 +366,8 @@ function sendMessage() {
   messageInput.value = "";
 
   // Mettre à jour l'interface
-  if (chatApp.setCurrentConversation) {
-    loadConversation(chatApp.setCurrentConversation.id);
+  const currentConversation = chatApp.getCurrentConversation();
+  if (currentConversation) {
+    loadConversation(currentConversation.id);
   }
 }
