@@ -1,0 +1,23 @@
+{
+  "name": "watshapp-vite",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "start": "json-server --watch db.json --port 3001",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "json-server": "^1.0.0-beta.3",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5"
+  }
+}
